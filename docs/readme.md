@@ -14,4 +14,3 @@
 
 > [examples/example2.js](examples/example2.js)
 
-## 追踪依赖

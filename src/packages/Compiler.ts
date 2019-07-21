@@ -92,12 +92,30 @@ class Compiler {
     });
   }
   resolveText(element: Text, content: string, instance: any) {
+    const _rawContent = content;
     let reg = /\{\{(.+?)\}\}/;
-    let expr = content.match(reg) || [];
-    element.textContent = Utils.resolveValue(instance.$data, expr[1]);
-    new Watcher(instance, expr[1], () => {
-      element.textContent = Utils.resolveValue(instance.$data, expr[1]);
-    });
+    let expr: RegExpMatchArray | null;
+    function reRenderText() {
+      let _content = _rawContent;
+      let _expr: RegExpMatchArray | null;
+
+      while ((_expr = _content.match(reg))) {
+        _content = _content.replace(
+          _expr[0],
+          Utils.resolveValue(instance.$data, _expr[1])
+        );
+      }
+      console.log(_content)
+      element.textContent = _content;
+    }
+    while ((expr = content.match(reg))) {
+      content = content.replace(
+        expr[0],
+        Utils.resolveValue(instance.$data, expr[1])
+      );
+      new Watcher(instance, expr[1], reRenderText);
+      element.textContent = content;
+    }
   }
 }
 

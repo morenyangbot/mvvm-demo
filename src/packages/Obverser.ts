@@ -10,7 +10,7 @@ class Observer {
         data.forEach(v => this.observe(v));
         return;
       }
-      Object.keys(data).forEach(k => this.defineReactive);
+      Object.keys(data).forEach(k => this.defineReactive(data, k, data[k]));
     }
   }
 
