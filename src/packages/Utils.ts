@@ -5,6 +5,14 @@ class Utils {
   static resolveValue(data: any, exp: string): any {
     return exp.split('.').reduce((_data, current) => _data[current], data);
   }
+  static setValue(data: any, exp: string, value: any) {
+    exp.split('.').reduce((_data, current, index, arr) => {
+      if (index === arr.length - 1) {
+        return (_data[current] = value);
+      }
+      return _data[current];
+    }, data);
+  }
 }
 
 export default Utils;
