@@ -8,7 +8,9 @@ class Compiler {
     this.el = this.isElementNode(el) ? el : document.querySelector(el);
     this.vm = vm;
     let fragement = this.createFragement(this.el);
-    this.el.appendChild(this.compile(fragement));
+    const childNode = this.compile(fragement);
+    this.el.appendChild(childNode);
+    return this.el
   }
   isElementNode(el: any): boolean {
     return el.nodeType === 1;
@@ -40,6 +42,7 @@ class Compiler {
 
         (node as Element).getAttributeNames().forEach(attr => {
           const attrValue = (node as Element).getAttribute(attr);
+          // 检测这个属性是不是绑定或 event
           if (this.isModel(attr)) {
             this.resolveModel(createdNode, attrValue, this.vm);
             return;
@@ -54,6 +57,7 @@ class Compiler {
             this.resolveEvent(createdNode, attrValue, this.vm, eventName);
             return;
           }
+          // 如果不是绑定或者event 则将原attr绑定到dom节点
           createdNode.setAttribute(attr, attrValue || '');
         });
         createdNode.appendChild(this.compile(node));

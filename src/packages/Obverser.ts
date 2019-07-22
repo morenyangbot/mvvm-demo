@@ -22,6 +22,8 @@ class Observer {
       enumerable: true,
       configurable: true,
       get() {
+        // 在调用get方法时， 会检测Dep缓存中是否有需要被订阅的函数
+        // 在应用中只有compile在mount的之前才会加上订阅
         Dep.target && dep.addSub(Dep.target);
         return value;
       },

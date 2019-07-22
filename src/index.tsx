@@ -1,6 +1,4 @@
 import MVVM from './packages/MVVM'
-console.log("Hello World")
-
 
 // const vm = {$data: {a: 11}}
 // let c = new Compiler("#app", vm);
