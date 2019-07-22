@@ -65,6 +65,7 @@ class Compiler {
       } else {
         let content = node.textContent || '';
         const createdNode = document.createTextNode(content);
+        // 匹配 {{}}
         if (/\{\{(.+?)\}\}/.test(content)) {
           this.resolveText(createdNode, content, this.vm);
         }
@@ -77,6 +78,7 @@ class Compiler {
     element.addEventListener(eventName, e => instance[exp].call(instance, e));
   }
   resolveBind(element: Element, exp: any, instance: any, valueName: string) {
+    // 创建一个 watcher， watcher创建时会把回调函数和instance绑定到exp对象的订阅中
     new Watcher(instance, exp, (nVal: string) => {
       console.debug(instance, exp, nVal);
       // @ts-ignore
@@ -99,11 +101,13 @@ class Compiler {
     const _rawContent = content;
     let reg = /\{\{(.+?)\}\}/;
     let expr: RegExpMatchArray | null;
+    // 重新渲染textNode的逻辑
     function reRenderText() {
       let _content = _rawContent;
       let _expr: RegExpMatchArray | null;
 
       while ((_expr = _content.match(reg))) {
+        // 替换模板值 {{a}} -> real value
         _content = _content.replace(
           _expr[0],
           Utils.resolveValue(instance.$data, _expr[1])
@@ -113,10 +117,12 @@ class Compiler {
       element.textContent = _content;
     }
     while ((expr = content.match(reg))) {
+      // 替换模板值 {{a}} -> real value
       content = content.replace(
         expr[0],
         Utils.resolveValue(instance.$data, expr[1])
       );
+      // 绑定watcher到 exp的数据上 当数据改变时，会触发Text重绘
       new Watcher(instance, expr[1], reRenderText);
       element.textContent = content;
     }
